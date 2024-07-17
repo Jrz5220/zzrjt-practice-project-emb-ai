@@ -22,8 +22,13 @@ def sentiment_analyzer(text_to_analyse):
     # format the response from the API as JSON
     formatted_response = json.loads(response.text)
     # extract the label and score values from the response
-    label = formatted_response["documentSentiment"]["label"]
-    score = formatted_response["documentSentiment"]["score"]
+    if response.status_code == 200:
+        label = formatted_response["documentSentiment"]["label"]
+        score = formatted_response["documentSentiment"]["score"]
+    elif response.status_code == 500:
+        # Watson AI libraries throw a 500 error for invalid entries
+        label = None
+        score = None
     # return the response text from the API
     return { "label": label, "score": score }
 
